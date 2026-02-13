@@ -3,100 +3,99 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Be My Valentine 💖</title>
+<title>Will You Be My Valentine? 💖</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
 
 <style>
-body {
+* {
     margin: 0;
-    font-family: 'Comic Sans MS', cursive;
-    background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+body {
+    height: 100vh;
+    background: linear-gradient(135deg, #ff9ecf, #ff4da6);
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
     overflow: hidden;
+    text-align: center;
 }
 
 .card {
-    background: #fff0f6;
-    padding: 40px 30px;
+    background: white;
+    padding: 50px 30px;
     border-radius: 25px;
-    text-align: center;
-    box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.25);
+    max-width: 420px;
     width: 90%;
-    max-width: 400px;
     position: relative;
 }
 
 h1 {
-    color: #ff4d88;
-    margin-bottom: 40px;
-}
-
-.button-area {
-    position: relative;
-    height: 200px;
+    color: #ff0066;
+    margin-bottom: 20px;
 }
 
 button {
-    padding: 15px 35px;
-    font-size: 20px;
-    border-radius: 50px;
+    padding: 12px 30px;
     border: none;
+    border-radius: 50px;
+    font-size: 20px;
     cursor: pointer;
-    transition: all 0.3s ease;
-    position: absolute;
+    margin: 10px;
+    transition: all 0.2s ease;
+    position: relative;
 }
 
 #yesBtn {
-    background: #ff4d88;
+    background: #ff0066;
     color: white;
-    left: 50%;
-    top: 45%;
-    transform: translate(-50%, -50%);
-    z-index: 2;
+}
+
+#yesBtn:hover {
+    transform: scale(1.1);
 }
 
 #noBtn {
-    background: #ff99aa;
-    color: white;
-    left: 50%;
-    top: 75%; /* extra spacing below YES */
-    transform: translate(-50%, -50%);
-    z-index: 1;
+    background: #ffd6eb;
+    color: #cc0066;
+    position: absolute;
 }
 
 #teaseMessage {
+    color: #ff0066;
+    font-weight: 600;
+    margin-top: 10px;
+    display: none;
+}
+
+#message {
+    margin-top: 20px;
+    font-size: 20px;
+    color: #ff0066;
+    display: none;
+}
+
+.cute-img {
+    width: 150px;
     margin-top: 15px;
-    color: #ff4d88;
-    font-size: 18px;
-}
-
-#finalMessage {
     display: none;
-    margin-top: 20px;
-    font-size: 22px;
-    color: #ff4d88;
-}
-
-#teddy {
-    display: none;
-    width: 200px;
-    margin-top: 20px;
 }
 
 /* Floating hearts */
 .heart {
     position: fixed;
-    bottom: -10px;
+    bottom: -20px;
     animation: floatUp 6s linear infinite;
 }
 
 @keyframes floatUp {
-    to {
-        transform: translateY(-110vh);
-        opacity: 0;
-    }
+    0% { transform: translateY(0); opacity: 1; }
+    100% { transform: translateY(-100vh); opacity: 0; }
 }
 
 /* Confetti */
@@ -104,8 +103,8 @@ button {
     position: fixed;
     width: 10px;
     height: 10px;
-    top: 0;
-    animation: fall linear forwards;
+    top: -10px;
+    animation: fall 3s linear forwards;
 }
 
 @keyframes fall {
@@ -120,31 +119,29 @@ button {
 <body>
 
 <div class="card">
-    <h1>Will you be my Valentine? 💘</h1>
+    <h1>Will You Be My Valentine? 💘</h1>
 
-    <div class="button-area">
-        <button id="yesBtn" onclick="sayYes()">Yes 💖</button>
-        <button id="noBtn">No 🙈</button>
-    </div>
+    <button id="yesBtn" onclick="sayYes()">Yes 💖</button>
+    <button id="noBtn">No 😢</button>
 
     <div id="teaseMessage"></div>
 
-    <div id="finalMessage">
-        YOU SAID YESSSS 😍💞 <br><br>
-        Mission successful 😌💘 <br>
-        Get ready for cuddles, chocolates & chaos 🐻🍫💕
+    <div id="message">
+        🎉 YOU SAID YESSSS!!! 🎉<br><br>
+        I knew destiny + my coding skills were unstoppable 😎💘<br>
+        Unlimited cuddles activated 🐻🍫🌹<br><br>
+        Achievement Unlocked: Valentine ❤️
     </div>
 
-    <img id="teddy" src="https://i.imgur.com/OdL0XPt.png" alt="Teddy Bear">
+    <img id="teddy" class="cute-img"
+        src="https://media.giphy.com/media/MDJ9IbxxvDUQM/giphy.gif"
+        alt="Cute Teddy">
 </div>
 
 <script>
-let noCount = 0;
+let noClickCount = 0;
 let noSize = 20;
 let yesSize = 20;
-let angle = 0;
-
-const radius = 90;
 
 const noMessages = [
     "Are you sure? 😥",
@@ -158,57 +155,75 @@ const noMessages = [
 
 const noBtn = document.getElementById("noBtn");
 const yesBtn = document.getElementById("yesBtn");
-const tease = document.getElementById("teaseMessage");
-const area = document.querySelector(".button-area");
+const teaseMessage = document.getElementById("teaseMessage");
+const card = document.querySelector(".card");
 
-function moveNo() {
+/* Position No initially near Yes */
+function positionNoNearYes() {
+    const yesRect = yesBtn.getBoundingClientRect();
+    const cardRect = card.getBoundingClientRect();
 
-    if (noCount < 7) {
+    noBtn.style.left = (yesRect.left - cardRect.left + 120) + "px";
+    noBtn.style.top = (yesRect.top - cardRect.top) + "px";
+}
 
-        noBtn.innerText = noMessages[noCount];
+window.onload = positionNoNearYes;
 
-        // Shrink NO
+function moveAndShrinkNoButton() {
+
+    if (noClickCount < 7) {
+
+        noBtn.innerText = noMessages[noClickCount];
+
+        // Shrink No
         noSize -= 2;
         noBtn.style.fontSize = noSize + "px";
 
-        // Grow YES
-        yesSize += 4;
+        // Grow Yes
+        yesSize += 5;
         yesBtn.style.fontSize = yesSize + "px";
-        yesBtn.style.padding = (15 + noCount*2) + "px " + (35 + noCount*3) + "px";
+        yesBtn.style.padding = (12 + noClickCount*2) + "px " + (30 + noClickCount*4) + "px";
 
-        // Rotate around YES
-        angle += 45;
-        const rad = angle * (Math.PI / 180);
+        const yesRect = yesBtn.getBoundingClientRect();
+        const cardRect = card.getBoundingClientRect();
 
-        const centerX = area.offsetWidth / 2;
-        const centerY = area.offsetHeight / 2;
+        const radius = 120;
+        const angle = Math.random() * 2 * Math.PI;
 
-        const x = centerX + radius * Math.cos(rad);
-        const y = centerY + radius * Math.sin(rad);
+        const offsetX = radius * Math.cos(angle);
+        const offsetY = radius * Math.sin(angle);
 
-        noBtn.style.left = x + "px";
-        noBtn.style.top = y + "px";
-        noBtn.style.transform = "translate(-50%, -50%)";
+        const newLeft = yesRect.left - cardRect.left + offsetX;
+        const newTop = yesRect.top - cardRect.top + offsetY;
 
-        noCount++;
+        noBtn.style.left = newLeft + "px";
+        noBtn.style.top = newTop + "px";
+
+        noClickCount++;
     }
 
-    if (noCount === 7) {
+    if (noClickCount === 7) {
         noBtn.style.display = "none";
-        yesBtn.innerText = "Okay fineee I choose YES 😳💘";
-        tease.innerText = "Hehehe 😏 Destiny wins every time 💖";
+
+        yesBtn.innerText = "Fineee I Choose YES 😳💖";
+        yesBtn.style.fontSize = "40px";
+        yesBtn.style.padding = "25px 60px";
+
+        teaseMessage.style.display = "block";
+        teaseMessage.innerText =
+            "Hehehe 😏 You tried… but destiny had other plans 💘";
     }
 }
 
-noBtn.addEventListener("mouseover", moveNo);
-noBtn.addEventListener("click", moveNo);
+noBtn.addEventListener("mouseover", moveAndShrinkNoButton);
+noBtn.addEventListener("click", moveAndShrinkNoButton);
 
 function sayYes() {
     noBtn.style.display = "none";
     yesBtn.style.display = "none";
-    tease.style.display = "none";
+    teaseMessage.style.display = "none";
 
-    document.getElementById("finalMessage").style.display = "block";
+    document.getElementById("message").style.display = "block";
     document.getElementById("teddy").style.display = "block";
 
     launchConfetti();
@@ -220,7 +235,7 @@ function createHeart() {
     heart.classList.add("heart");
     heart.innerHTML = "💖";
     heart.style.left = Math.random() * 100 + "vw";
-    heart.style.fontSize = Math.random() * 20 + 15 + "px";
+    heart.style.fontSize = Math.random() * 25 + 15 + "px";
     document.body.appendChild(heart);
     setTimeout(() => heart.remove(), 6000);
 }
