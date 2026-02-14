@@ -3,99 +3,100 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Will You Be My Valentine? 💖</title>
-
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+<title>Be My Valentine 💖</title>
 
 <style>
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: 'Poppins', sans-serif;
-}
-
 body {
-    height: 100vh;
-    background: linear-gradient(135deg, #ff9ecf, #ff4da6);
+    margin: 0;
+    font-family: 'Comic Sans MS', cursive;
+    background: linear-gradient(135deg, #ff9a9e, #fad0c4);
     display: flex;
     justify-content: center;
     align-items: center;
+    height: 100vh;
     overflow: hidden;
-    text-align: center;
 }
 
 .card {
-    background: white;
-    padding: 50px 30px;
+    background: #fff0f6;
+    padding: 40px 30px;
     border-radius: 25px;
-    box-shadow: 0 20px 40px rgba(0,0,0,0.25);
-    max-width: 420px;
+    text-align: center;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.15);
     width: 90%;
+    max-width: 400px;
     position: relative;
 }
 
 h1 {
-    color: #ff0066;
-    margin-bottom: 20px;
+    color: #ff4d88;
+    margin-bottom: 40px;
+}
+
+.button-area {
+    position: relative;
+    height: 200px;
 }
 
 button {
-    padding: 12px 30px;
-    border: none;
-    border-radius: 50px;
+    padding: 15px 35px;
     font-size: 20px;
+    border-radius: 50px;
+    border: none;
     cursor: pointer;
-    margin: 10px;
-    transition: all 0.2s ease;
-    position: relative;
-}
-
-#yesBtn {
-    background: #ff0066;
-    color: white;
-}
-
-#yesBtn:hover {
-    transform: scale(1.1);
-}
-
-#noBtn {
-    background: #ffd6eb;
-    color: #cc0066;
+    transition: all 0.3s ease;
     position: absolute;
 }
 
+#yesBtn {
+    background: #ff4d88;
+    color: white;
+    left: 50%;
+    top: 45%;
+    transform: translate(-50%, -50%);
+    z-index: 2;
+}
+
+#noBtn {
+    background: #ff99aa;
+    color: white;
+    left: 50%;
+    top: 75%;
+    transform: translate(-50%, -50%);
+    z-index: 1;
+}
+
 #teaseMessage {
-    color: #ff0066;
-    font-weight: 600;
-    margin-top: 10px;
-    display: none;
-}
-
-#message {
-    margin-top: 20px;
-    font-size: 20px;
-    color: #ff0066;
-    display: none;
-}
-
-.cute-img {
-    width: 150px;
     margin-top: 15px;
+    color: #ff4d88;
+    font-size: 18px;
+}
+
+#finalMessage {
     display: none;
+    margin-top: 20px;
+    font-size: 22px;
+    color: #ff4d88;
+}
+
+#teddy {
+    display: none;
+    width: 200px;
+    margin-top: 20px;
 }
 
 /* Floating hearts */
 .heart {
     position: fixed;
-    bottom: -20px;
+    bottom: -10px;
     animation: floatUp 6s linear infinite;
 }
 
 @keyframes floatUp {
-    0% { transform: translateY(0); opacity: 1; }
-    100% { transform: translateY(-100vh); opacity: 0; }
+    to {
+        transform: translateY(-110vh);
+        opacity: 0;
+    }
 }
 
 /* Confetti */
@@ -103,8 +104,8 @@ button {
     position: fixed;
     width: 10px;
     height: 10px;
-    top: -10px;
-    animation: fall 3s linear forwards;
+    top: 0;
+    animation: fall linear forwards;
 }
 
 @keyframes fall {
@@ -119,29 +120,27 @@ button {
 <body>
 
 <div class="card">
-    <h1>Will You Be My Valentine? 💘</h1>
+    <h1>Will you be my Valentine? 💘</h1>
 
-    <button id="yesBtn" onclick="sayYes()">Yes 💖</button>
-    <button id="noBtn">No 😢</button>
+    <div class="button-area">
+        <button id="yesBtn" onclick="sayYes()">Yes 💖</button>
+        <button id="noBtn">No 🙈</button>
+    </div>
 
     <div id="teaseMessage"></div>
 
-    <div id="message">
-        🎉 YOU SAID YESSSS!!! 🎉<br><br>
-        Pata tha mujhe!!! Aap ek din man hi jayenge😎💘<br>
-        Unlimited cuddles activated 🐻🍫🌹<br><br>
-        Achievement Unlocked: Valentine ❤️
-    </div>
+    <div id="finalMessage"></div>
 
-    <img id="teddy" class="cute-img"
-        src="https://media.giphy.com/media/MDJ9IbxxvDUQM/giphy.gif"
-        alt="Cute Teddy">
+    <img id="teddy" src="https://i.imgur.com/OdL0XPt.png" alt="Teddy Bear">
 </div>
 
 <script>
-let noClickCount = 0;
+let noCount = 0;
 let noSize = 20;
 let yesSize = 20;
+let angle = 0;
+
+const radius = 90;
 
 const noMessages = [
     "Are you sure? 😥",
@@ -155,75 +154,65 @@ const noMessages = [
 
 const noBtn = document.getElementById("noBtn");
 const yesBtn = document.getElementById("yesBtn");
-const teaseMessage = document.getElementById("teaseMessage");
-const card = document.querySelector(".card");
+const tease = document.getElementById("teaseMessage");
+const area = document.querySelector(".button-area");
 
-/* Position No initially near Yes */
-function positionNoNearYes() {
-    const yesRect = yesBtn.getBoundingClientRect();
-    const cardRect = card.getBoundingClientRect();
+function moveNo() {
 
-    noBtn.style.left = (yesRect.left - cardRect.left + 120) + "px";
-    noBtn.style.top = (yesRect.top - cardRect.top) + "px";
-}
+    if (noCount < 7) {
 
-window.onload = positionNoNearYes;
+        noBtn.innerText = noMessages[noCount];
 
-function moveAndShrinkNoButton() {
-
-    if (noClickCount < 7) {
-
-        noBtn.innerText = noMessages[noClickCount];
-
-        // Shrink No
+        // Shrink NO
         noSize -= 2;
         noBtn.style.fontSize = noSize + "px";
 
-        // Grow Yes
-        yesSize += 5;
+        // Grow YES
+        yesSize += 4;
         yesBtn.style.fontSize = yesSize + "px";
-        yesBtn.style.padding = (12 + noClickCount*2) + "px " + (30 + noClickCount*4) + "px";
+        yesBtn.style.padding = (15 + noCount*2) + "px " + (35 + noCount*3) + "px";
 
-        const yesRect = yesBtn.getBoundingClientRect();
-        const cardRect = card.getBoundingClientRect();
+        // Rotate around YES
+        angle += 45;
+        const rad = angle * (Math.PI / 180);
 
-        const radius = 120;
-        const angle = Math.random() * 2 * Math.PI;
+        const centerX = area.offsetWidth / 2;
+        const centerY = area.offsetHeight / 2;
 
-        const offsetX = radius * Math.cos(angle);
-        const offsetY = radius * Math.sin(angle);
+        const x = centerX + radius * Math.cos(rad);
+        const y = centerY + radius * Math.sin(rad);
 
-        const newLeft = yesRect.left - cardRect.left + offsetX;
-        const newTop = yesRect.top - cardRect.top + offsetY;
+        noBtn.style.left = x + "px";
+        noBtn.style.top = y + "px";
+        noBtn.style.transform = "translate(-50%, -50%)";
 
-        noBtn.style.left = newLeft + "px";
-        noBtn.style.top = newTop + "px";
-
-        noClickCount++;
+        noCount++;
     }
 
-    if (noClickCount === 7) {
+    if (noCount === 7) {
         noBtn.style.display = "none";
-
-        yesBtn.innerText = "Fineee I Choose YES 😳💖";
-        yesBtn.style.fontSize = "40px";
-        yesBtn.style.padding = "25px 60px";
-
-        teaseMessage.style.display = "block";
-        teaseMessage.innerText =
-            "Hehehe 😏 You tried… but destiny had other plans 💘";
+        yesBtn.innerText = "Okay fineee I choose YES 😳💘";
+        tease.innerText = "Hehehe 😏 Destiny wins every time 💖";
     }
 }
 
-noBtn.addEventListener("mouseover", moveAndShrinkNoButton);
-noBtn.addEventListener("click", moveAndShrinkNoButton);
+noBtn.addEventListener("mouseover", moveNo);
+noBtn.addEventListener("click", moveNo);
 
 function sayYes() {
     noBtn.style.display = "none";
     yesBtn.style.display = "none";
-    teaseMessage.style.display = "none";
+    tease.style.display = "none";
 
-    document.getElementById("message").style.display = "block";
+    const finalMsg = document.getElementById("finalMessage");
+    finalMsg.style.display = "block";
+    finalMsg.innerHTML = `
+        YOU SAID YESSSS 😍💞 <br><br>
+        He he pata ab <b>${noCount}</b> baar reject karne ke baad  
+        ek baar haan bol hi doge 😏💘 <br><br>
+        Mission successful 😌💕
+    `;
+
     document.getElementById("teddy").style.display = "block";
 
     launchConfetti();
@@ -235,7 +224,7 @@ function createHeart() {
     heart.classList.add("heart");
     heart.innerHTML = "💖";
     heart.style.left = Math.random() * 100 + "vw";
-    heart.style.fontSize = Math.random() * 25 + 15 + "px";
+    heart.style.fontSize = Math.random() * 20 + 15 + "px";
     document.body.appendChild(heart);
     setTimeout(() => heart.remove(), 6000);
 }
@@ -259,4 +248,3 @@ function launchConfetti() {
 
 </body>
 </html>
-
