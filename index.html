@@ -35,7 +35,7 @@ h1 {
 
 .button-area {
     position: relative;
-    height: 200px;
+    height: 220px;
 }
 
 button {
@@ -63,7 +63,7 @@ button {
     left: 50%;
     top: 75%;
     transform: translate(-50%, -50%);
-    z-index: 1;
+    z-index: 3; /* Always above YES */
 }
 
 #teaseMessage {
@@ -79,10 +79,11 @@ button {
     color: #ff4d88;
 }
 
-#teddy {
+#catGif {
     display: none;
     width: 200px;
     margin-top: 20px;
+    border-radius: 20px;
 }
 
 /* Floating hearts */
@@ -131,7 +132,9 @@ button {
 
     <div id="finalMessage"></div>
 
-    <img id="teddy" src="https://i.imgur.com/OdL0XPt.png" alt="Teddy Bear">
+    <img id="catGif" 
+         src="https://media.giphy.com/media/MDJ9IbxxvDUQM/giphy.gif" 
+         alt="Kissing Cat">
 </div>
 
 <script>
@@ -161,6 +164,8 @@ function moveNo() {
 
     if (noCount < 7) {
 
+        noBtn.style.zIndex = 5; // Always stay above
+
         noBtn.innerText = noMessages[noCount];
 
         // Shrink NO
@@ -173,7 +178,7 @@ function moveNo() {
         yesBtn.style.padding = (15 + noCount*2) + "px " + (35 + noCount*3) + "px";
 
         // Rotate around YES
-        angle += 45;
+        angle += 50;
         const rad = angle * (Math.PI / 180);
 
         const centerX = area.offsetWidth / 2;
@@ -208,12 +213,12 @@ function sayYes() {
     finalMsg.style.display = "block";
     finalMsg.innerHTML = `
         YOU SAID YESSSS 😍💞 <br><br>
-        pata tha mujhe aap <b>${noCount}</b> baar reject karne ke baad  
-        ek baar haan bol hi denge 😏💘 <br><br>
-        Mission successful 😌💕
+        I knew destiny would win 😌💖 <br><br>
+        He he pata ab <b>${noCount}</b> baar reject karne ke baad  
+        ek baar haan bol hi doge 😏💘
     `;
 
-    document.getElementById("teddy").style.display = "block";
+    document.getElementById("catGif").style.display = "block";
 
     launchConfetti();
 }
